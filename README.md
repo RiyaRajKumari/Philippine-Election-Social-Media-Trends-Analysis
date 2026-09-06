@@ -1,4 +1,4 @@
-# 🇵🇭 Philippine Election Social Media Trends 2025
+#  Philippine Election Social Media Trends 2025
 A real-time data engineering pipeline that processes social media data using Apache Kafka, AWS, Databricks Structured Streaming, Delta Lake and Databricks Dashboards.
 ## 📌 Project Overview
 This project demonstrates an end-to-end real-time data engineering pipeline for analyzing social media activity related to the Philippine Election 2025.
