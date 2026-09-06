@@ -60,11 +60,16 @@ IAM roles and permissions were configured to allow secure access between AWS ser
 ### Networking
 The Kafka broker was accessed through the EC2 public IPv4 address and configured using Kafka advertised listeners.
 ## 📨 Kafka Streaming
-Kafka acts as the real-time messaging layer.
+
 ### Kafka Topic
+
 ```text
 twitter
-## Message flow:-
+```
+
+### Message Flow
+
+```text
 Python Producer
       ↓
 Kafka Producer
@@ -72,9 +77,16 @@ Kafka Producer
 Kafka Topic: twitter
       ↓
 Databricks Structured Streaming
+```
+
+---
+
 ## ⚡ Databricks Streaming Pipeline
+
 Databricks Structured Streaming consumes messages from Apache Kafka.
+
 The pipeline performs the following operations:
+
 1. Connects to the Kafka broker.
 2. Reads messages from the `twitter` topic.
 3. Converts Kafka binary values into strings.
@@ -82,30 +94,63 @@ The pipeline performs the following operations:
 5. Extracts relevant social media fields.
 6. Stores streaming data in Delta format.
 7. Creates analytical aggregations.
+
+---
+
 ## 💾 Data Storage and Tables
+
 The processed streaming data is organized into tables for analysis.
+
 ### Raw Streaming Data
+
 Contains parsed social media records received from Kafka.
+
 ### Trending Hashtags
+
 Contains hashtag frequency counts used to identify trending topics.
+
 ### Most Active Users
+
 Contains user activity counts based on the number of posts.
+
 These tables are used as the source for the Databricks Dashboard.
+
+---
+
 ## 📊 Analytics
+
 The project currently generates the following insights:
+
 ### 🔥 Top Trending Hashtags
+
 Hashtags are extracted from social media posts, normalized, grouped, and counted.
+
 ### 👥 Most Active Users
+
 Users are grouped based on their posting activity and ranked by post count.
+
+---
+
 ## 📈 Dashboard
-The Databricks Dashboard provides real-time insights into social media activity.
-### Top Trending Hashtags
+
+The Databricks Dashboard provides insights into social media activity.
+
+### 🔥 Top Trending Hashtags
+
 ![Trending Hashtags](screenshots/trending_hashtags.png)
-### Top 10 Most Active Users
+
+### 👥 Top 10 Most Active Users
+
 ![Most Active Users](screenshots/active_users.png)
-### Full Dashboard
+
+### 📊 Full Dashboard
+
 ![Dashboard](screenshots/dashboard.png)
+
+---
+
 ## 📁 Project Structure
+
 ```text
 social-media-trends/
 │
@@ -134,65 +179,122 @@ social-media-trends/
     ├── dashboard.png
     ├── trending_hashtags.png
     └── active_users.png
-## 🚀 How to Run the project:-
-### 1.Clone the Repository
+```
+
+---
+
+## 🚀 How to Run the Project
+
+### 1. Clone the Repository
+
 ```bash
 git clone YOUR_REPOSITORY_URL
-### 2.Start Kafka
 cd social-media-trends
+```
+
+### 2. Start Kafka
+
+```bash
 cd kafka
 docker compose up -d
-### 3.Run the Python Producer
+```
+
+### 3. Run the Python Producer
+
+```bash
 cd producer
 source venv/bin/activate
 python producer.py
-### 4.Run the Databricks Pipeline
+```
+
+### 4. Run the Databricks Pipeline
+
 Run the Databricks notebook cells in sequence:
-Define the Spark schema.
-Connect to Kafka.
-Parse streaming JSON messages.
-Store the processed data.
-Create analytical tables.
-Create the dashboard visualizations.
+
+1. Define the Spark schema.
+2. Connect to Kafka.
+3. Parse streaming JSON messages.
+4. Store the processed data.
+5. Create analytical tables.
+6. Create the dashboard visualizations.
+
+---
+
 ## ⚙️ Important Configuration
+
 Kafka is configured using the EC2 public IPv4 address.
+
 If the EC2 instance is stopped and started without an Elastic IP, the public IPv4 address may change.
+
 Update the Kafka advertised listener accordingly:
+
 ```text
-KAFKA_ADVERTISED_LISTENERS=
-INTERNAL://kafka:29092,
-HOST://localhost:39092,
-EXTERNAL://YOUR_EC2_PUBLIC_IP:9092
-### After updating the configuration:
+KAFKA_ADVERTISED_LISTENERS: INTERNAL://kafka:29092,HOST://localhost:39092,EXTERNAL://YOUR_EC2_PUBLIC_IP:9092
+```
+
+### After updating the configuration
+
+```bash
 docker compose down
 docker compose up -d
+```
+
+---
+
 ## 🧩 Challenges and Solutions
+
 ### Kafka External Connectivity
+
 **Challenge:**  
 The EC2 public IPv4 address changed after the instance was stopped and restarted.
+
 **Solution:**  
-The Kafka `KAFKA_ADVERTISED_LISTENERS` configuration was updated with the new EC2 public IPv4 address and the Kafka container was restarted.
+The `KAFKA_ADVERTISED_LISTENERS` configuration was updated with the new EC2 public IPv4 address and the Kafka container was restarted.
+
+---
+
 ### Kafka Message Parsing
+
 **Challenge:**  
 Kafka message values were received as binary data.
+
 **Solution:**  
-The Kafka value column was converted to a string before parsing the JSON payload.
+The Kafka `value` column was converted to a string before parsing the JSON payload.
+
+---
+
 ### Streaming Checkpoint Configuration
+
 **Challenge:**  
 Databricks required an explicit checkpoint location for streaming operations.
+
 **Solution:**  
 A checkpoint location inside a Unity Catalog Volume was specified.
+
+---
+
 ### Streaming Output Mode
+
 **Challenge:**  
 An unsupported streaming output mode was used for a non-aggregated streaming DataFrame.
+
 **Solution:**  
 The streaming operation was adjusted to use an appropriate output mode based on whether aggregation was performed.
+
+---
+
 ### Public DBFS Restriction
+
 **Challenge:**  
 The workspace did not allow checkpoints in the public DBFS root.
+
 **Solution:**  
 Checkpoint locations were moved to a supported Unity Catalog Volume.
+
+---
+
 ## 🚀 Future Improvements
+
 - Integrate a live social media API.
 - Add sentiment analysis.
 - Perform topic classification.
@@ -203,9 +305,15 @@ Checkpoint locations were moved to a supported Unity Catalog Volume.
 - Use CI/CD pipelines.
 - Add monitoring and alerting.
 - Use an Elastic IP or DNS for stable Kafka connectivity.
+
+---
+
 ## 🔐 Security
+
 No sensitive credentials are included in this repository.
+
 The following files and information should never be committed:
+
 - AWS access keys
 - Secret keys
 - Databricks tokens
@@ -213,8 +321,13 @@ The following files and information should never be committed:
 - SSH private keys
 - `.pem` files
 - Personal connection strings
+
+---
+
 ## 📌 Project Status
+
 The project successfully demonstrates:
+
 - Real-time event streaming
 - Kafka integration
 - Spark Structured Streaming
@@ -222,6 +335,11 @@ The project successfully demonstrates:
 - Delta Lake storage
 - Analytical transformations
 - Interactive dashboards
+
+---
+
 ## 👤 Author
-Riya Raj Kumari
-Data Engineering / Cloud / Real-Time Streaming Project
+
+**Riya Raj Kumari**
+
+Data Engineering | Cloud | Real-Time Streaming
